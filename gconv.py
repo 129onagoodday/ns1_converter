@@ -14,7 +14,7 @@ import argparse
 parser = argparse.ArgumentParser()
 #parser.add_argument("inputfile", help="file with the data to process", type=str)
 #parser.add_argument("outputfile", help="file where the outputdata is sćomming to be stored", type=str)
-parser.add_argument("-w", "--overwritemode", help="if you want to overwrite en existing file, otherwise the script adds just kontext to a existing file", action="store_true") 
+parser.add_argument("-w", "--overwritemode", help="if you want to overwrite en existing file, otherwise the script adds just kontext to a existing file", action="store_true")
 parser.add_argument("-tr", "--trennung", help="optional seperation in the inputfile, ; has to be written as ';'")
 args = parser.parse_args()
 if args.overwritemode:
@@ -24,7 +24,7 @@ else:
 	writemode = "a"
 print (args.trennung)
 if args.trennung:
-	splitv=args.trennung	
+	splitv=args.trennung
 else:
 	splitv = ";"
 
@@ -55,67 +55,67 @@ def gconvert(inputline):
 		sep2=splitv
 		sep3=':'
 		sep4='-'
-		
+
+
+		emujb=inputline[0:inputline.find(sep1)]
+		emujnrb=inputline[inputline.find(sep1):inputline.find(sep2)]
+		chrb=inputline[inputline.find(sep2)+1:inputline.find(sep3)]
+		gstartb=inputline[inputline.find(sep3)+1:inputline.find(sep4)]
+		gendb=str.rstrip(inputline[inputline.find(sep4)+1:len(inputline)])
+
 		i=0
 		z=len(inputline)
-		
-		
-		while i <= z :		
+
+
+		while i <= z :
 				if inputline[i]=='_' :
 					counter=i+1
 					i = z
 				else :
 					emuj=emuj+inputline[i]
 				i=i+1
-		emujb=inputline[0:inputline.find(sep1)]
-		emujnrb=inputline[inputline.find(sep1):inputline.find(sep2)]
-		chrb=inputline[inputline.find(sep2)+1:inputline.find(sep3)]
-		gstartb=inputline[inputline.find(sep3)+1:inputline.find(sep4)]
-		gendb=str.rstrip(inputline[inputline.find(sep4)+1:len(inputline)])
-		
-		
-		emujnr=''		
+		emujnr=''
 		i=counter-1
 		z=len(inputline)
-		while i <= z :	
+		while i <= z :
 				if inputline[i]==splitv:
 					counter=i+1
 					i = z
 				else :
 					emujnr=emujnr+inputline[i]
-				i=i+1						
-		
+				i=i+1
+
 		i=counter
 		z=len(inputline)
-		while i <= z :	
+		while i <= z :
 				if inputline[i]==':' :
 					counter=i+1
 					i = z
 				else :
 					chr=chr+inputline[i]
 				i=i+1
-				
-		
-		
+
+
+
 		i=counter
 		z=len(inputline)
-		while i <= z :	
+		while i <= z :
 				if inputline[i]=='-' :
 					counter=i+1
 					i = z
 				else :
 					gstart=gstart+inputline[i]
 				i=i+1
-				
-		
+
+
 		i=counter
 		z=len(inputline)
 		while i <= z-1 :
 				gend=gend+str.rstrip(inputline[i]) # macht sonst zeilenumbruch
-				i=i+1		
-		
+				i=i+1
+
 		gsumm=int(gstart)-int(gend)
-		
+
 		if gsumm<0 :
 			gdir='+'
 		else :
@@ -123,13 +123,22 @@ def gconvert(inputline):
 				zw=gstart
 				gstart=gend
 				gend=zw
-			
-		#####\t ist ein tab                                                                                                 
+				zw=gstartb
+				gstartb=gendb
+				gendb=zw
+
+		#####\t ist ein tab
 		outputline=chr+'\tmanually_defined\t'+emuj+'\t'+gstart+'\t'+gend+'\t.\t'+gdir+'\t.\tgene_id "'+emuj+emujnr+'"; transcript_id "'+emuj+':'+emuj+emujnr+'.1"'
+		outputline2=chrb+'\tmanually_defined\t'+emujb+'\t'+gstartb+'\t'+gendb+'\t.\t'+gdir+'\t.\tgene_id "'+emujb+emujnrb+'"; transcript_id "'+emujb+':'+emujb+emujnrb+'.1"'
+		print(outputline+"\n"+outputline2)
+		if outputline==outputline2 :
+			print ('OK')
+		else :
+			print ('Error')
 		# so rum wollte ich das transcript id haben
 
 		return outputline
-	
+
 
 
 content=[]
@@ -143,7 +152,7 @@ def readinput ():
 
 
 def writeoutput():
-	with open(outputfile, writemode) as f2:	
+	with open(outputfile, writemode) as f2:
 		for x in content:
 			if len(x)<10 or x.find(splitv)==-1:
 				print("seperator not found or to short line")
